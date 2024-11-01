@@ -33,4 +33,4 @@ csv_path
 # product_category: can be null
 # discount can be null
 # store_address can be null
-# if we have two rows with the same product_id but a different product_name what we should do?
+# if we have two rows with the same product_id but a different product_name what we should do? 
