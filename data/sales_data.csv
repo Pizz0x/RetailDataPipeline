@@ -1,4 +1,4 @@
-transaction_id,date,store_id,store_location,product_id,product_name,category,quantity_sold,unit_price,discount,total_sales
+transaction_id,datetime,store_id,store_location,product_id,product_name,category,quantity_sold,unit_price,discount,total_sales
 15811,2024-10-09,7,Brianastad,3684,Friend,Clothing,6,32.7,0.01,194.24
 94797,2024-10-14,2,West Joseph,7438,Our,Groceries,19,38.69,0.13,639.55
 25720,2024-10-20,3,Port Blakeview,3602,Then,Furniture,4,46.78,0.03,181.51
@@ -6,8 +6,8 @@ transaction_id,date,store_id,store_location,product_id,product_name,category,qua
 17258,2024-10-09,6,North Robert,4683,Ball,Furniture,8,35.03,0.09,255.02
 27003,2024-10-21,2,Lake Mariohaven,2950,Number,Groceries,12,14.73,0.19,143.18
 3366,2024-10-31,1,North Jamesmouth,6112,Choose,Toys,4,99.52,0.19,322.44
-50499,2024-10-10,7,Tranmouth,6221,Development,Furniture,15,7.05,0.06,99.4
-5011,2024-10-30,8,Port Jamesside,5719,Film,Furniture,19,70.6,0.06,1260.92
+50499,2024-10-10,7,Tranmouth,6221,Development,Furniture,15,7.05,0.06,99.4       
+5011,2024-10-30,8,Port Jamesside,5719,Film,Furniture,19,70.6,0.06,1260.92       
 9707,2024-10-17,1,Adammouth,1905,Democratic,Toys,7,17.53,0.07,114.12
 24647,2024-10-25,1,North Tammy,6340,Off,Electronics,7,53.83,0.05,357.97
 10288,2024-10-18,9,West Benjaminport,4996,Drive,Clothing,6,75.08,0.19,364.89

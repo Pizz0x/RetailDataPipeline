@@ -4,3 +4,5 @@ import pandas as pd
 sales_data = pd.read_csv('data/sales_data.csv')
 # Display first few rows to verify
 print(sales_data.head())
+
+# Store the Extracted Data Temporarily (Optional)
