@@ -1,0 +1,6 @@
+transaction_id,date,store_id,product_id,product_name,quantity_sold,unit_price,total_sales
+101,2023-10-01,1,1001,Shampoo,3,5.99,17.97
+102,2023-10-01,2,1002,Soap,5,1.99,9.95
+103,2023-10-02,1,1001,Shampoo,2,5.99,11.98
+104,2023-10-02,3,1003,Conditioner,7,6.99,48.93
+105,2023-10-03,2,1002,Soap,3,1.99,5.97

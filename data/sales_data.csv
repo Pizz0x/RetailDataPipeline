@@ -1,0 +1,101 @@
+transaction_id,date,store_id,store_location,product_id,product_name,category,quantity_sold,unit_price,discount,total_sales
+15811,2024-10-09,7,Brianastad,3684,Friend,Clothing,6,32.7,0.01,194.24
+94797,2024-10-14,2,West Joseph,7438,Our,Groceries,19,38.69,0.13,639.55
+25720,2024-10-20,3,Port Blakeview,3602,Then,Furniture,4,46.78,0.03,181.51
+7705,2024-10-03,9,Mullinsport,363,Cup,Clothing,9,67.07,0.09,549.3
+17258,2024-10-09,6,North Robert,4683,Ball,Furniture,8,35.03,0.09,255.02
+27003,2024-10-21,2,Lake Mariohaven,2950,Number,Groceries,12,14.73,0.19,143.18
+3366,2024-10-31,1,North Jamesmouth,6112,Choose,Toys,4,99.52,0.19,322.44
+50499,2024-10-10,7,Tranmouth,6221,Development,Furniture,15,7.05,0.06,99.4
+5011,2024-10-30,8,Port Jamesside,5719,Film,Furniture,19,70.6,0.06,1260.92
+9707,2024-10-17,1,Adammouth,1905,Democratic,Toys,7,17.53,0.07,114.12
+24647,2024-10-25,1,North Tammy,6340,Off,Electronics,7,53.83,0.05,357.97
+10288,2024-10-18,9,West Benjaminport,4996,Drive,Clothing,6,75.08,0.19,364.89
+38211,2024-10-23,6,Scotthaven,1132,Environment,Furniture,11,14.32,0.0,157.52
+80472,2024-10-09,8,Port Jasmine,165,Animal,Electronics,14,66.24,0.08,853.17
+53750,2024-10-20,9,South Jeffrey,9576,Argue,Electronics,2,70.92,0.07,131.91
+76515,2024-10-19,9,Mendezville,2531,Single,Groceries,13,82.77,0.06,1011.45
+95360,2024-10-02,2,Whiteshire,2451,Discover,Groceries,6,20.35,0.11,108.67
+22016,2024-10-08,1,East William,4650,Green,Groceries,6,43.58,0.14,224.87
+6986,2024-10-05,1,Maryhaven,6959,Doctor,Toys,13,53.67,0.11,620.96
+4120,2024-10-28,9,South Leah,3958,Evidence,Toys,8,77.58,0.05,589.61
+40876,2024-10-07,5,Jessicaville,218,Them,Furniture,15,14.81,0.15,188.83
+79830,2024-10-08,3,East Jonathanstad,5899,Spend,Electronics,4,84.06,0.09,305.98
+10678,2024-10-07,6,North Brett,7798,Poor,Electronics,18,16.02,0.14,247.99
+53734,2024-10-11,8,New Edward,6256,Experience,Toys,5,7.53,0.1,33.88
+40437,2024-10-08,4,Davidfort,1267,Pick,Electronics,13,16.47,0.04,205.55
+70076,2024-10-29,8,East James,5966,Soldier,Clothing,8,76.62,0.05,582.31
+22165,2024-10-07,8,Lake Raymondburgh,7222,Understand,Toys,6,48.36,0.02,284.36
+26317,2024-10-20,8,Randallfurt,804,Save,Furniture,10,7.63,0.13,66.38
+97632,2024-10-23,9,Bennettville,8816,Policy,Furniture,17,35.2,0.02,586.43
+42658,2024-10-14,5,Perryburgh,5392,Music,Electronics,4,45.67,0.05,173.55
+74296,2024-10-19,1,South Mary,5894,Father,Clothing,7,22.43,0.12,138.17
+87008,2024-10-31,7,Smithview,5796,Between,Groceries,1,19.28,0.02,18.89
+77474,2024-10-06,3,Lake Jennifer,1970,Enter,Groceries,12,56.07,0.16,565.19
+80193,2024-10-15,1,Karaview,9298,North,Groceries,3,15.06,0.09,41.11
+30351,2024-10-04,4,Brooksburgh,7328,Analysis,Toys,16,24.01,0.1,345.74
+40186,2024-10-11,8,Carlaview,1844,Full,Toys,12,29.74,0.12,314.05
+15747,2024-10-24,1,Lewisshire,5470,Republican,Toys,16,30.01,0.01,475.36
+33488,2024-10-18,4,New Charleston,8420,Agree,Clothing,2,52.32,0.13,91.04
+24148,2024-10-07,5,Daleberg,3032,Set,Electronics,2,43.67,0.11,77.73
+42388,2024-10-03,3,Jacquelineshire,9626,Able,Toys,19,52.21,0.08,912.63
+57038,2024-10-12,1,Washingtonside,860,Many,Groceries,19,93.96,0.08,1642.42
+71852,2024-10-22,3,Clarktown,7833,Star,Electronics,9,14.04,0.17,104.88
+61945,2024-10-02,8,East Eric,434,There,Groceries,10,39.82,0.19,322.54
+2142,2024-10-31,7,Campbellville,5572,Chance,Electronics,9,56.84,0.06,480.87
+79390,2024-10-03,8,Porterchester,6016,Garden,Groceries,5,34.13,0.05,162.12
+86225,2024-10-16,8,South Tammy,2043,Boy,Clothing,4,48.61,0.1,175.0
+10478,2024-10-25,3,Chanshire,9602,Drop,Furniture,16,14.03,0.11,199.79
+82310,2024-10-13,1,Elizabethtown,4680,Race,Clothing,13,33.46,0.16,365.38
+29950,2024-10-27,1,Yatesport,7539,However,Toys,16,6.85,0.11,97.54
+91562,2024-10-23,3,Keithmouth,6951,Change,Clothing,10,15.88,0.12,139.74
+18696,2024-10-05,6,Lake Tiffanyfurt,2212,Room,Electronics,10,64.24,0.07,597.43
+91030,2024-10-15,7,Port Rebeccaside,5002,Skill,Electronics,13,64.12,0.07,775.21
+53994,2024-10-19,6,East Aliceburgh,2215,Hundred,Electronics,6,47.87,0.07,267.11
+68139,2024-10-17,6,Evelynton,2402,Role,Clothing,7,13.96,0.14,84.04
+92712,2024-10-31,2,Kathleenchester,8640,Room,Clothing,13,74.95,0.04,935.38
+80324,2024-10-30,3,Jacquelineberg,8576,Already,Toys,5,60.11,0.02,294.54
+66104,2024-10-23,3,Michellechester,8667,Ball,Toys,11,25.29,0.14,239.24
+58544,2024-10-17,1,Hendersontown,7910,Condition,Electronics,9,29.85,0.17,222.98
+36845,2024-10-11,9,East Sueborough,5203,Than,Clothing,18,70.56,0.07,1181.17
+49007,2024-10-15,6,Lake Jake,4137,I,Groceries,10,64.99,0.15,552.42
+16671,2024-10-08,5,Lake Katherine,7918,Do,Toys,17,49.72,0.2,676.19
+18808,2024-10-07,4,Leeview,8107,Set,Groceries,17,73.32,0.14,1071.94
+38427,2024-10-12,8,Johnview,1750,Area,Clothing,6,82.51,0.16,415.85
+51311,2024-10-07,7,New Alexis,5264,Order,Groceries,4,11.23,0.04,43.12
+98335,2024-10-09,4,Moorebury,1908,Authority,Toys,5,26.55,0.05,126.11
+15492,2024-10-27,7,West Gregoryburgh,4883,Understand,Electronics,18,31.2,0.03,544.75
+86519,2024-10-16,5,South Kevin,3340,Necessary,Clothing,6,32.77,0.08,180.89
+6691,2024-10-24,1,North Sarahhaven,4833,Letter,Groceries,13,94.15,0.18,1003.64
+79813,2024-10-16,5,West Amber,9021,Store,Clothing,16,84.71,0.1,1219.82
+24129,2024-10-07,2,Susanstad,3052,Brother,Furniture,7,95.67,0.11,596.02
+25542,2024-10-28,1,Danielletown,3336,Wind,Furniture,16,68.14,0.18,894.0
+25957,2024-10-29,8,South Robertland,5708,Movie,Electronics,18,75.51,0.02,1332.0
+79437,2024-10-24,5,Salazarborough,6597,May,Groceries,11,77.04,0.14,728.8
+73719,2024-10-29,7,Port Hannah,9522,Certain,Electronics,18,17.4,0.02,306.94
+70099,2024-10-30,1,Paulfurt,3059,Professor,Groceries,19,18.65,0.06,333.09
+73714,2024-10-11,3,Barbaraborough,3155,Ability,Furniture,12,15.23,0.06,171.79
+70025,2024-10-28,8,Salinasport,4869,Clear,Toys,4,97.65,0.09,355.45
+35012,2024-10-30,7,Smithside,6280,Free,Furniture,17,56.81,0.19,782.27
+30031,2024-10-26,1,Christinaburgh,7661,Growth,Toys,3,50.8,0.18,124.97
+53962,2024-10-08,6,Martinezberg,3565,List,Toys,14,99.98,0.08,1287.74
+47613,2024-10-04,2,Hamiltonfort,7422,Receive,Electronics,4,99.6,0.04,382.46
+66899,2024-10-17,8,Graceshire,972,Industry,Electronics,12,52.15,0.0,625.8
+89520,2024-10-09,3,East Ethan,2634,Hospital,Electronics,18,77.03,0.03,1344.94
+77480,2024-10-23,9,West Jennifermouth,2974,Go,Clothing,12,86.75,0.14,895.26
+68882,2024-10-29,7,East Richardfurt,400,Which,Clothing,18,58.27,0.01,1038.37
+37265,2024-10-12,4,Davisstad,5346,Enjoy,Groceries,19,71.75,0.17,1131.5
+54670,2024-10-19,9,Roblesport,3020,Magazine,Toys,4,78.56,0.1,282.82
+2309,2024-10-29,5,South Kyleport,9467,Reach,Groceries,13,73.58,0.06,899.15
+24597,2024-10-07,6,Delacruzville,4043,Soon,Furniture,11,81.12,0.18,731.7
+45628,2024-10-26,7,Christinebury,8542,Group,Clothing,3,67.31,0.04,193.85
+6800,2024-10-29,8,Thomasport,8992,Get,Clothing,17,6.97,0.07,110.2
+68559,2024-10-14,6,South Morgantown,2735,Bank,Furniture,3,21.3,0.19,51.76
+91610,2024-10-22,4,East Travis,4623,Newspaper,Clothing,1,95.05,0.2,76.04
+8836,2024-10-19,4,East Thomas,3365,General,Electronics,7,7.4,0.19,41.96
+85718,2024-10-13,9,Lake Jamesview,9751,Newspaper,Furniture,13,57.42,0.16,627.03
+97126,2024-10-25,5,North Alanborough,5892,Support,Furniture,13,89.6,0.06,1094.91
+48049,2024-10-31,2,Garcialand,2995,Letter,Electronics,11,93.83,0.13,897.95
+75193,2024-10-29,2,Cantufurt,6700,Physical,Groceries,5,12.84,0.0,64.2
+62931,2024-10-29,6,Tannerberg,670,Wish,Electronics,6,75.48,0.13,394.01
+47529,2024-10-31,2,Brianland,6722,Able,Toys,11,62.88,0.05,657.1
