@@ -33,4 +33,12 @@ csv_path
 # product_category: can be null
 # discount can be null
 # store_address can be null
-# if we have two rows with the same product_id but a different product_name what we should do? 
+
+# once we receive data, we add it to the table transaction_product cause every row in the csv is about a product in a transaction, then we will add the information in the other relation only if there isnt already that information saved:
+# transaction will be saved only if we are in a new transaction
+# product will be saved only if we it's the first time that product has been bought
+# store will be saved only if its the first transaction in the store
+# stock i don't think its appropriate right now because we dont start with some values already in the table, but we can do like type of transaction and if it's an import it means it's a delivery so some product has arrived to the store, but the problem is that we dont know with how many items for a product we start and we don't even know with what products we start
+
+# do we suppose that data we receive are correct?
+# if we have two rows with the same product_id but a different product_name what we should do?  not discard the second one, because maybe its the second one to be correct
