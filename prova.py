@@ -21,13 +21,13 @@ df.to_csv(csv_path, index=False)
 
 csv_path
 
-# transaction: transaction_id, date_time, store_id, payment_method
-# transaction_product: id_artificial, product_id, transaction_id, quantity_sold, discount, total_cost
+# transaction: transaction_id, transaction_type, date_time, store_id, payment_method
+# transaction_product: product_id, transaction_id, quantity_sold, discount, #total_price
 # store: store_id, store_city, store_address, store_postalcode
-# product: product_id, product_name, product_description, product_category, unit_price, total_sold       
-# stock: id_artificial, product_id, store_id, stock_level                                                stock is a table between product and store to see how many product are left //OPTIONAL
+# product: product_id, product_name, product_description, product_category, unit_price, #total_sold       
+# stock: product_id, store_id, #stock_level                                                stock is a table between product and store to see how many product are left //OPTIONAL
 
-# transaction_id, date_time, payment_method, product_id, product_name, product_description, product_category, unit_price, quantity_sold, discount, store_id, store_city, store_address, store_postalcode
+# transaction_id, transaction_type, date_time, payment_method, product_id, product_name, product_description, product_category, unit_price, quantity_sold, discount, store_id, store_city, store_address, store_postalcode
 
 # product_description: can be null
 # product_category: can be null
