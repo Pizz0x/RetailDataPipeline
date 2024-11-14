@@ -62,7 +62,21 @@ for index, row in stocks.iterrows():
 
 stocks = pd.DataFrame(stocks_toKeep)
 
-#NOW THAT WE HAVE ALL TABLES WITH UNIQUE ROW WE CAN IMPLEMENT THE TABLE TRANSACTION_PRODUCTS THAT IS BASICALLY 
+#NOW THAT WE HAVE ALL TABLES WITH UNIQUE ROW WE CAN IMPLEMENT THE TABLE TRANSACTION_PRODUCTS THAT IS BASICALLY EVERY CORRECT ROW OF THE CSV FILE AND MODIFY THE VALUES OF THE OTHER DATAFRAME
+transaction_products = sales_data[['transaction_id', 'product_id', 'quantity_sold', 'discount', 'total_price']]
+tp_toKeep = []
+for index, row in transaction_products.iterrows():
+    if row['product_id'] in unique_products and row['transaction_id'] in unique_transactions:
+        tp_toKeep.append(row)
+        # refresh the number of products sold
+        product_row = products[products['product_id'] == row['product_id']]
+        quantity_sold = product_row['total_sold'].values[0] + row['quantity_sold']
+        products.loc[products['product_id'] == row['product_id'], 'total_sold'] = quantity_sold
+        # refresh the number of products in the stock
+        store_id = transactions[transactions['transaction_id'] == row['transaction_id']]['store_id'].values[0]
+        stock_row = stocks[stocks['store_id'] == store_id and stocks['product_id'] == row['product_id']]
+        # if transaction is Sell we substract to the stock, if the transaction is Buy, we add
+        #stock_level = stock_row['stock_level'].values[0] + row[]
 
 print(products)
 print(transactions)
