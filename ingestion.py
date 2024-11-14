@@ -70,10 +70,11 @@ for index, row in transaction_products.iterrows():
         tp_toKeep.append(row)
         # refresh the number of products sold
         product_row = products[products['product_id'] == row['product_id']]
-        quantity = product_row['total_sold'].values[0] + row['quantity']
-        products.loc[products['product_id'] == row['product_id'], 'total_sold'] = quantity
-        # refresh the number of products in the stock
         transaction_row = transactions[transactions['transaction_id'] == row['transaction_id']] #transaction row with the right id
+        if transaction_row['transaction_type'].values[0] == 'Sell':
+            quantity = product_row['total_sold'].values[0] + row['quantity']
+            products.loc[products['product_id'] == row['product_id'], 'total_sold'] = quantity
+        # refresh the number of products in the stock
         store_id = transaction_row['store_id'].values[0] #store id of the transaction
         stock_row = stocks[(stocks['store_id'] == store_id) & (stocks['product_id'] == row['product_id'])] #stock row with the right id
 
