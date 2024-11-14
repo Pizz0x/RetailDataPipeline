@@ -1,12 +1,12 @@
-transaction_id,date_time,payment_method,product_id,product_name,product_description,product_category,unit_price,quantity_sold,discount,store_id,store_city,store_address,store_postalcode,transaction_type
-10001,2023-11-01 10:45:00,Credit Card,2001,Smartphone,High-end smartphone with 128GB storage,Electronics,699.99,2,0.1,2,New York,123 Elm St.,10001,Buy
-10004,2023-11-04 11:30:00,Online Payment,4001,Shirt,Cotton shirt with modern fit,Clothing,29.99,5,0.15,1,Los Angeles,456 Oak Ave.,90001,Sell
+transaction_id,date_time,payment_method,product_id,product_name,product_description,product_category,unit_price,quantity,discount,store_id,store_city,store_address,store_postalcode,transaction_type
+10001,2023-11-01 10:45:00,Credit Card,2001,Smartphone,High-end smartphone with 128GB storage,Electronics,699.99,2,0.1,1,New York,123 Elm St.,10001,Buy
+10004,2023-11-04 11:30:00,Online Payment,4001,Shirt,Cotton shirt with modern fit,Clothing,29.99,5,0.15,4,Houston,321 Maple St.,77001,Sell
 10001,2023-11-01 10:45:00,Credit Card,3002,Headphones,Noise-cancelling over-ear headphones,Electronics,149.99,3,0.05,1,Los Angeles,456 Oak Ave.,90001,Buy
 10002,2023-11-02 14:20:00,Debit Card,3002,Headphones,Noise-cancelling over-ear headphones,Electronics,149.99,3,0.05,1,Los Angeles,456 Oak Ave.,90001,Sell
 10003,2023-11-03 09:15:00,Cash,4001,Shirt,Cotton shirt with modern fit,Clothing,29.99,5,0.15,3,Chicago,789 Pine Dr.,60601,Buy
 10004,2023-11-04 11:30:00,Online Payment,5003,Table,Wooden dining table for 4,Furniture,199.99,1,0.2,4,Houston,321 Maple St.,77001,Sell
 10005,2023-11-05 16:50:00,Credit Card,3002,Headphones,Noise-cancelling over-ear headphones,Electronics,149.99,3,0.05,1,Los Angeles,456 Oak Ave.,90001,Buy
-10006,2023-11-06 13:45:00,Cash,3002,Headphones,Noise-cancelling over-ear headphones,Electronics,149.99,3,0.05,6,Dallas,987 Birch Ln.,75201,Sell
+10006,2023-11-06 13:45:00,Cash,3002,Headphones,Noise-cancelling over-ear headphones,Electronics,149.99,3,0.05,6,Dallas,987 Birch Ln.,75201,Buy
 10007,2023-11-07 15:10:00,Debit Card,8005,Sneakers,Comfortable running sneakers,Clothing,59.99,2,0.1,7,San Francisco,159 Walnut Blvd.,94101,Sell
 10008,2023-11-08 12:00:00,Online Payment,9003,Backpack,Durable hiking backpack,Clothing,79.99,3,0.15,2,New York,123 Elm St.,10001,Buy
 10009,2023-11-09 14:30:00,Credit Card,10006,Sofa,Leather sofa with recliner,Furniture,1099.99,1,0.2,1,Los Angeles,456 Oak Ave.,90001,Sell
