@@ -1,4 +1,5 @@
 import pandas as pd
+from sqlalchemy import create_engine
 ### 1. DATA INGESTION
 
 sales_data = pd.read_csv('data/sample_sales_data.csv') # Load data from a CSV file
@@ -141,6 +142,8 @@ for index, row in transaction_products.iterrows():
 
 ### 3. DATA STORAGE 
 
+DATABASE_URI = 'postgresql+psycopg2://{}:{}@localhost/cultural_corner'
+engine = create_engine(DATABASE_URI)
 
 #print(products)
 #print(transactions)
