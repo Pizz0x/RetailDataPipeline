@@ -45,3 +45,12 @@ csv_path
 
 # we are going to use Apache Airflow because we imagine that in a real retail data management, we are not working with a super reactive system where in real time it analyze the single data, we thought it more like a batch automated flow that manage the ingestion and transformation of data at regular intervals (like every day at midnight when the shops are closed)
 # we also chose Apache Airflow because it allows us to incorporate python scripts directly
+# DAG is a collection of all the tasks i want to run organzed ina a way that reflect their relationship and dependencies
+# When a dag run is triggered the tasks are gonna be executed one after another based on their dependencies. Each task has different state in its lifecycle. 
+# no status: the initial status, the scheduler create an empty task instance
+# 4 different stages the task can be moved on : scheduled -> the scheduler determine the task instance need to be run ; removed; upstream failed; skipped
+# scheduled -> then executor put task into a queue and once the worker computation resources are free the state became running and then success; failed or shutdown
+
+
+# Airflow Xcoms is used to share information between tasks: push information to Xcoms in a task and pull from others.
+#by default every functions return value will be automatically pushed into xcoms
