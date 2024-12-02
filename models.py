@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, Float, DateTime, create_engine
 
 
 
-DATABASE_URI = 'postgresql+psycopg2://{}:{}@localhost/cultural_corner'
+DATABASE_URI = 'postgresql+psycopg2://{}:{}@localhost/retail_pipeline'
 engine = create_engine(DATABASE_URI)
 
 Base = declarative_base()

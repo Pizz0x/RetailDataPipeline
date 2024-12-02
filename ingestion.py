@@ -142,7 +142,7 @@ for index, row in transaction_products.iterrows():
 
 ### 3. DATA STORAGE 
 
-DATABASE_URI = 'postgresql+psycopg2://{}:{}@localhost/cultural_corner'
+DATABASE_URI = 'postgresql+psycopg2://{}:{}@localhost/retail_pipeline'
 engine = create_engine(DATABASE_URI)
 
 #print(products)

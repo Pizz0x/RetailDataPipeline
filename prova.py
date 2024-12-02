@@ -42,3 +42,6 @@ csv_path
 
 # do we suppose that data we receive are correct?
 # if we have two rows with the same product_id but a different product_name what we should do?  not discard the second one, because maybe its the second one to be correct
+
+# we are going to use Apache Airflow because we imagine that in a real retail data management, we are not working with a super reactive system where in real time it analyze the single data, we thought it more like a batch automated flow that manage the ingestion and transformation of data at regular intervals (like every day at midnight when the shops are closed)
+# we also chose Apache Airflow because it allows us to incorporate python scripts directly
