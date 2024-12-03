@@ -1,5 +1,9 @@
+import database_uri
+
 import pandas as pd
+import psycopg2
 from sqlalchemy import create_engine
+import database_uri
 ### 1. DATA INGESTION
 
 sales_data = pd.read_csv('data/sample_sales_data.csv') # Load data from a CSV file
@@ -142,8 +146,40 @@ for index, row in transaction_products.iterrows():
 
 ### 3. DATA STORAGE 
 
-DATABASE_URI = 'postgresql+psycopg2://{}:{}@localhost/retail_pipeline'
-engine = create_engine(DATABASE_URI)
+#DATABASE_URI = 'postgresql+psycopg2://{}:{}@localhost/retail_pipeline'
+#engine = create_engine(DATABASE_URI)
+
+#DATABASE_URI = 'postgresql://postgres:postgres@127.0.0.1:5432/cultural_corner'
+engine = create_engine(database_uri.DATABASE_URI)
+
+conn_1 = engine.connect()
+conn_2 = psycopg2.connect(database_uri.DATABASE_URI)
+
+conn_2.autocommit = True
+cursor = conn_2.cursor()
+
+#sales_data.to_sql('sales_data', con=conn_1, if_exists='append')
+sales_summary.to_sql('sales_summary', con=conn_1, if_exists='append')
+stores.to_sql('stores', con=conn_1)
+products.to_sql('products', con=conn_1, if_exists='append')
+transactions.to_sql('transactions', con=conn_1, if_exists='append')
+stocks.to_sql('stocks', con=conn_1, if_exists='append')
+
+#sql1 = '''select * from sales_data'''
+#cursor.execute(sql1)
+sql2 = '''select * from sales_summary'''
+cursor.execute(sql2)
+sql3 = '''select * from stores'''
+cursor.execute(sql3)
+sql4 = '''select * from products'''
+cursor.execute(sql4)
+sql5 = '''select * from transactions'''
+cursor.execute(sql5)
+sql6 = '''select * from stocks'''
+cursor.execute(sql6)
+
+for i in cursor.fetchall():
+    print(i)
 
 #print(products)
 #print(transactions)
