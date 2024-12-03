@@ -38,6 +38,9 @@ Create an airflow user:
 <br>
 
 `airflow users list`
+<br>
+
+Install the necessary dependencies for interacting with PostgreSQL databases: `pip install apache-airflow-providers-postgres`
 
 Run the scheduler: `airflow scheduler`
 <br>
