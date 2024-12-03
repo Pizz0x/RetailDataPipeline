@@ -53,4 +53,8 @@ csv_path
 
 
 # Airflow Xcoms is used to share information between tasks: push information to Xcoms in a task and pull from others.
-#by default every functions return value will be automatically pushed into xcoms
+#by default every functions return value will be automatically pushed into xcoms, never use xcoms to share large data as pandas dataframe
+# in airflow creating a dag needs the schedule interval parameter which receives a cron esxpression as a string or a datetime.timedelta object.
+# a cron expression is a string comprising 5 fields separeted by white space that represent a set of time as a schedule to execute some routine -> if u know how to use cron expressions u can schedule your dag in any way u want.
+# to generate customized schedule interval using cron expression '* * * * *' minute hour day(month) month day(week)  example: 0 3 * * Tue,Fri  -> at 3 am on tuesday and friday
+# 

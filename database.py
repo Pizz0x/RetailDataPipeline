@@ -1,11 +1,5 @@
-import mysql.connector
-
-mydb = mysql.connector.connect(
-  host="localhost",
-  user="yourusername",
-  password="yourpassword"
-)
-
-mycursor = mydb.cursor()
-
-mycursor.execute("CREATE DATABASE mydatabase")
+conn = psycopg2.connect(database = "retail_data", 
+                        user = "admin", 
+                        host= 'localhost',
+                        password = "admin",
+                        port = 5432)
