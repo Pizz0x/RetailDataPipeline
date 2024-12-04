@@ -1,3 +1,4 @@
+import psycopg2
 conn = psycopg2.connect(database = "retail_data", 
                         user = "admin", 
                         host= 'localhost',

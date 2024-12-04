@@ -58,3 +58,10 @@ csv_path
 # a cron expression is a string comprising 5 fields separeted by white space that represent a set of time as a schedule to execute some routine -> if u know how to use cron expressions u can schedule your dag in any way u want.
 # to generate customized schedule interval using cron expression '* * * * *' minute hour day(month) month day(week)  example: 0 3 * * Tue,Fri  -> at 3 am on tuesday and friday
 # 
+
+#Using Apache Airflow for data ingestion, we can extend its functionality for performance monitoring:
+#Built-in Logging and Monitoring: Airflow provides logs for every task in a DAG. You can monitor task execution times and failure rates from the Airflow UI.
+#LAs (Service Level Agreements): You can set SLAs for tasks to monitor if they complete within a defined time. 
+
+# data storage: insert data into a database with models that if not already created are goin to be created by apache airflow and then with some dedicated procedure data are gonna be visualised in graph thanks to Grafana or other visualisation interface.
+# presentation on a case scenario : introduction on what we wanted to do, explaining the tools we are using and why and explaining the case and what we did to manage it
