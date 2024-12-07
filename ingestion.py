@@ -1,6 +1,4 @@
-
 import pandas as pd
-from sqlalchemy import create_engine
 import psycopg2
 from psycopg2.extras import execute_values
 from config import load_config
@@ -66,11 +64,12 @@ sales_data['total_sold'] = 0
 sales_data['stock_level'] = 0
 
 sales_summary = sales_data.groupby(['store_id','product_id']).agg({'total_price': 'sum'})  # to watch best products, best store and best products per store
+
 #print(sales_summary)
 # 2.4 PARTITION DATA IN DIFFERENT DATA FRAME
 
 # STORES
-stores = sales_data[['store_id', 'store_city', 'store_address', 'store_postalcode']]
+stores = sales_data[['store_id', 'store_address', 'store_postalcode']]
 unique_stores = set()
 stores_toKeep = []
 for index, row in stores.iterrows():
@@ -79,6 +78,17 @@ for index, row in stores.iterrows():
         unique_stores.add(row['store_id'])
 
 stores = pd.DataFrame(stores_toKeep)
+
+# cities
+cities = sales_data[['store_postalcode', 'store_city']]
+unique_cities = set()
+cities_to_keep = []
+for index, row in cities.iterrows():
+    if row['store_postalcode'] not in unique_cities:
+        cities_to_keep.append(row)
+        unique_cities.add(row['store_postalcode'])
+
+cities = pd.DataFrame(cities_to_keep)
 
 # PRODUCTS
 products = sales_data[['product_id', 'product_name', 'product_description', 'product_category', 'unit_price', 'total_sold']]
@@ -145,6 +155,11 @@ for index, row in transaction_products.iterrows():
             stock_level = stock_row['stock_level'].values[0]
         stocks.loc[(stocks['product_id']==row['product_id']) & (stocks['store_id']==store_id), 'stock_level'] = stock_level
 
+stocks = pd.DataFrame(stocks)
+sales_data = pd.DataFrame(sales_data)
+sales_summary = pd.DataFrame(sales_summary)
+
+
 ### 3. DATA STORAGE 
 
 config = load_config()
@@ -153,9 +168,17 @@ conn.autocommit = True
 cursor = conn.cursor()
 
 # 3.1 Insert Stores in the Database
+cities_tuples = [tuple(x) for x in cities.to_numpy()]
+sql1 = """
+insert into cities (store_postalcode, store_city)
+values %s
+on conflict(store_postalcode) do nothing;
+"""
+execute_values(cursor, sql1, cities_tuples)
+
 stores_tuples = [tuple(x) for x in stores.to_numpy()]
 sql = """
-INSERT INTO stores (store_id, store_city, store_address, store_postalcode)
+INSERT INTO stores (store_id, store_address, store_postalcode)
 VALUES %s
 ON CONFLICT(store_id) DO NOTHING;
 """
@@ -179,8 +202,7 @@ ON CONFLICT(product_id) DO NOTHING;
 """
 execute_values(cursor, sql3, products_tuples)
 
-
-# 3.4 Insert Stocks in the Database
+# 3.4 Insert Transaction Products in the Database
 transaction_products_tuples = [tuple(x) for x in transaction_products.to_numpy()]
 sql5 = """
 INSERT INTO transaction_products (transaction_id, product_id, quantity_sold, discount, total_price)
@@ -189,30 +211,24 @@ ON CONFLICT(transaction_id, product_id) DO NOTHING;
 """
 execute_values(cursor, sql5, transaction_products_tuples)
 
+stocks_tupels = [tuple(x) for x in stocks.to_numpy()]
+sql6 = """
+INSERT INTO stocks (store_id, product_id, stock_level)
+VALUES %s
+ON CONFLICT(store_id, product_id) DO NOTHING;
+"""
 
-#sales_data.to_sql('sales_data', con=conn_1, if_exists='append')
-#sales_summary.to_sql('transaction_products', con=conn, if_exists='append')
-# products.to_sql('products', con=conn, if_exists='append')
-# transactions.to_sql('transactions', con=conn, if_exists='append')
-# stocks.to_sql('stocks', con=conn, if_exists='append')
+#sales_summary_tupels = [tuple(x) for x in sales_summary.to_numpy()]
+#sql7 = '''
+#insert into sales_summary (store_id, product_id, total_price)
+#values %s
+#on conflict (store_id, product_id) do nothing;
+#'''
 
-# #sql1 = '''select * from sales_data'''
-# #cursor.execute(sql1)
-# sql2 = '''select * from sales_summary'''
-# cursor.execute(sql2)
-# sql3 = '''select * from stores'''
-# cursor.execute(sql3)
-# sql4 = '''select * from products'''
-# cursor.execute(sql4)
-# sql5 = '''select * from transactions'''
-# cursor.execute(sql5)
-# sql6 = '''select * from stocks'''
-# cursor.execute(sql6)
-
-# for i in cursor.fetchall():
-#     print(i)
-
-#print(products)
-#print(transactions)
-#print(stores)
-#print(stocks)
+#sales_data_tupels = [tuple(x) for x in sales_data.to_numpy()]
+#sql8 = '''
+#insert into sales_data (transaction_id, date_time, payment_method, product_id, product_name, product_description, 
+#product_category, unit_price, quantity, discount, store_id, store_city, 
+#store_address, store_postalcode, transaction_type, total_price, total_sold, stock_level)
+#values %s
+#'''
