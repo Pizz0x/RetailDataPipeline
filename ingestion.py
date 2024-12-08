@@ -7,7 +7,7 @@ from config import load_config
 
 ### 1. DATA INGESTION
 
-sales_data = pd.read_csv('data/sample_sales_data.csv') # Load data from a CSV file
+sales_data = pd.read_csv('data/transaction_data.csv') # Load data from a CSV file
 
 # Store the Extracted Data Temporarily (Optional)
 
@@ -126,7 +126,7 @@ for index, row in transaction_products.iterrows():
         # UPDATE NUMBER OF PRODUCT SOLD
         product_row = products[products['product_id'] == row['product_id']]
         transaction_row = transactions[transactions['transaction_id'] == row['transaction_id']] #transaction row with the right id
-        if transaction_row['transaction_type'].values[0] == 'Sell':
+        if transaction_row['transaction_type'].values[0] == 'sell':
             quantity = product_row['total_sold'].values[0] + row['quantity']
             products.loc[products['product_id'] == row['product_id'], 'total_sold'] = quantity
         # UPDATE NUMBER OF PRODUCT IN THE STOCK
@@ -137,9 +137,9 @@ for index, row in transaction_products.iterrows():
         #print(f"the stock level is {stock_row['stock_level'].values[0]}")
         if stock_row.empty:
             stock_level = row['quantity']
-        elif(transaction_row['transaction_type'].values[0] == 'Buy'):
+        elif(transaction_row['transaction_type'].values[0] == 'buy'):
             stock_level = stock_row['stock_level'].values[0] + row['quantity']
-        elif(transaction_row['transaction_type'].values[0] == 'Sell'):
+        elif(transaction_row['transaction_type'].values[0] == 'sell'):
             stock_level = stock_row['stock_level'].values[0] - row['quantity']
         else:
             stock_level = stock_row['stock_level'].values[0]
@@ -175,26 +175,34 @@ products_tuples = [tuple(x) for x in products.to_numpy()]
 sql3 = """
 INSERT INTO products (product_id, product_name, product_description, product_category, unit_price, total_sold)
 VALUES %s
-ON CONFLICT(product_id) DO NOTHING;
+ON CONFLICT(product_id) 
+DO UPDATE SET
+    unit_price = EXCLUDED.unit_price,
+    total_sold = products.total_sold + EXCLUDED.total_sold;
 """
 execute_values(cursor, sql3, products_tuples)
 
 
-# 3.4 Insert Stocks in the Database
+# 3.4 Insert Transaction Product in the Database
 transaction_products_tuples = [tuple(x) for x in transaction_products.to_numpy()]
-sql5 = """
+sql4 = """
 INSERT INTO transaction_products (transaction_id, product_id, quantity_sold, discount, total_price)
 VALUES %s
-ON CONFLICT(transaction_id, product_id) DO NOTHING;
+ON CONFLICT(product_id, transaction_id) DO NOTHING;
 """
-execute_values(cursor, sql5, transaction_products_tuples)
+execute_values(cursor, sql4, transaction_products_tuples)
 
 
-#sales_data.to_sql('sales_data', con=conn_1, if_exists='append')
-#sales_summary.to_sql('transaction_products', con=conn, if_exists='append')
-# products.to_sql('products', con=conn, if_exists='append')
-# transactions.to_sql('transactions', con=conn, if_exists='append')
-# stocks.to_sql('stocks', con=conn, if_exists='append')
+# 3.5 Stocks in the Database
+stocks_tuples = [tuple(int(x) for x in row) for row in stocks.to_numpy()]
+sql5 = """
+INSERT INTO stocks (store_id, product_id, stock_level)
+VALUES %s ON CONFLICT(store_id, product_id) 
+DO UPDATE SET
+    stock_level = stocks.stock_level + EXCLUDED.stock_level;
+"""
+execute_values(cursor, sql5, stocks_tuples)
+
 
 # #sql1 = '''select * from sales_data'''
 # #cursor.execute(sql1)
@@ -212,7 +220,3 @@ execute_values(cursor, sql5, transaction_products_tuples)
 # for i in cursor.fetchall():
 #     print(i)
 
-#print(products)
-#print(transactions)
-#print(stores)
-#print(stocks)

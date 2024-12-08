@@ -57,7 +57,6 @@ csv_path
 # in airflow creating a dag needs the schedule interval parameter which receives a cron esxpression as a string or a datetime.timedelta object.
 # a cron expression is a string comprising 5 fields separeted by white space that represent a set of time as a schedule to execute some routine -> if u know how to use cron expressions u can schedule your dag in any way u want.
 # to generate customized schedule interval using cron expression '* * * * *' minute hour day(month) month day(week)  example: 0 3 * * Tue,Fri  -> at 3 am on tuesday and friday
-# 
 
 #Using Apache Airflow for data ingestion, we can extend its functionality for performance monitoring:
 #Built-in Logging and Monitoring: Airflow provides logs for every task in a DAG. You can monitor task execution times and failure rates from the Airflow UI.
@@ -65,3 +64,10 @@ csv_path
 
 # data storage: insert data into a database with models that if not already created are goin to be created by apache airflow and then with some dedicated procedure data are gonna be visualised in graph thanks to Grafana or other visualisation interface.
 # presentation on a case scenario : introduction on what we wanted to do, explaining the tools we are using and why and explaining the case and what we did to manage it
+
+# interesting graphs:   # of products sold every day from every store
+#                       most sold product in total
+#                       most sold product for every store
+#                       store with most products sold
+
+# question for the first csv file: can you create me a csv file with this information: transaction_id,date_time,payment_method,product_id,product_name,product_description,product_category,unit_price,quantity,discount,store_id,store_city,store_address,store_postalcode,transaction_type, where transaction_id is the id of the transaction (in a transaction there can be more products so there can be more line with a transaction_id, date_time is only in the last 2 months. payment method can be only: cash, card or gift card. the product are clothes and there are 5 stores: Bruxelles, Brugges, Gent, Antwerp and Liege. The transaction_type is for buy and sell so the shop before fullfil the stock and then sell the products. is it possible for you to do a big csv file with at least 10000 rows?
