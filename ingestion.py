@@ -1,17 +1,40 @@
 import pandas as pd
+#from sqlalchemy import create_engine
+from datetime import datetime
+
 import psycopg2
 from psycopg2.extras import execute_values
 from config import load_config
 
 ### 1. DATA INGESTION
 
-sales_data = pd.read_csv('data/sample_sales_data.csv') # Load data from a CSV file
-
+sales_data = pd.read_csv('data/transaction_data.csv') # Load data from a CSV file
 # Store the Extracted Data Temporarily (Optional)
 
 ### 2. DATA TRANSFORMATION
+removed_rows = []
+# 2.1 CLEAN ERRORS AND DUPLICATE ROWS
 
-# 2.1 CLEAN DUPLICATE ROWS
+sales_toKeep = []
+for index, row in sales_data.iterrows():
+    date_time = datetime.strptime(row['date_time'], '%m/%d/%Y %H:%M')
+    now = datetime.now()
+    if (row['quantity'] < 1):
+        removed_row_with_reason = row.to_dict()
+        removed_row_with_reason['reason'] = 'The product sold in this row has a quantity minor than 1'
+        removed_rows.append(removed_row_with_reason)
+    elif (row['discount'] > 1):
+        removed_row_with_reason = row.to_dict()
+        removed_row_with_reason['reason'] = 'The product sold in this row has a discount greater than 100%'
+        removed_rows.append(removed_row_with_reason)
+    elif (date_time > now):
+        removed_row_with_reason = row.to_dict()
+        removed_row_with_reason['reason'] = f'This transaction has a register date: {date_time} greater than the actual time {now}'
+        removed_rows.append(removed_row_with_reason)
+    else:
+        sales_toKeep.append(row)
+
+sales_data = pd.DataFrame(sales_toKeep)
 
 unique_sales = set()
 sales_toKeep = []
@@ -19,12 +42,18 @@ for index, row in sales_data.iterrows():
     if (row['transaction_id'], row['product_id']) not in unique_sales:
         sales_toKeep.append(row)
         unique_sales.add((row['transaction_id'], row['product_id']))
-    #if date_time < now   ; if discount < 1;  quantity < 1
+    else:
+        removed_row_with_reason = row.to_dict()
+        removed_row_with_reason['reason'] = 'The row is a duplicate, it has the same transaction_id and product_id of an already saved row'
+        removed_rows.append(removed_row_with_reason)
+
 sales_data = pd.DataFrame(sales_toKeep)
 
+#print(sales_data)
 # 2.2 CLEAN ROWS WITH SAME ID BUT DIFFERENT FIELDS FOR EVERY TYPE OF DATA FRAME
 
 # get all the rows where store_id is the same and see if there are rows with some of the stores field different, do this even for products and transactions
+tmp_removed_rows = []
 store = sales_data.groupby('store_id')
 rows_toKeep = []
 for store_id, row in store:
@@ -33,8 +62,15 @@ for store_id, row in store:
     max = counter.idxmax()
     max_row = row[(row['store_city'] == max[0]) & (row['store_address'] == max[1]) & (row['store_postalcode'] == max[2])]
     rows_toKeep.append(max_row)
-
+    # add the rows that are excluded for a precise store_id in temporary removed rows
+    tmp_removed_rows = row[~((row['store_city'] == max[0]) & (row['store_address'] == max[1]) & (row['store_postalcode'] == max[2]))]
+    # add the reason of the removal and append the temporary removed rows to removed rows
+    for _, removed_row in tmp_removed_rows.iterrows():
+        removed_row_with_reason = removed_row.to_dict()
+        removed_row_with_reason['reason'] = f'The row has been removed for store_id: {store_id} with a less frequent combination'
+        removed_rows.append(removed_row_with_reason)
 sales_data = pd.concat(rows_toKeep, ignore_index=True)
+#print(sales_data)
 
 transaction = sales_data.groupby('transaction_id')
 rows_toKeep = []
@@ -44,6 +80,13 @@ for transaction_id, row in transaction:
     max = counter.idxmax()
     max_row = row[(row['payment_method'] == max[0]) & (row['store_id'] == max[1]) & (row['date_time'] == max[2]) & (row['transaction_type'] == max[3])]
     rows_toKeep.append(max_row)
+    # add the rows that are excluded for a precise store_id in temporary removed rows
+    tmp_removed_rows = row[~((row['payment_method'] == max[0]) & (row['store_id'] == max[1]) & (row['date_time'] == max[2]) & (row['transaction_type'] == max[3]))]
+    # add the reason of the removal and append the temporary removed rows to removed rows
+    for _, removed_row in tmp_removed_rows.iterrows():
+        removed_row_with_reason = removed_row.to_dict()
+        removed_row_with_reason['reason'] = f'The row has been removed for transaction_id: {transaction_id} with a less frequent combination'
+        removed_rows.append(removed_row_with_reason)
 
 sales_data = pd.concat(rows_toKeep, ignore_index=True)
 
@@ -55,11 +98,26 @@ for product_id, row in product:
     max = counter.idxmax()
     max_row = row[(row['product_name'] == max[0]) & (row['product_description'] == max[1]) & (row['product_category'] == max[2]) & (row['unit_price'] == max[3])]
     rows_toKeep.append(max_row)
+    # add the rows that are excluded for a precise store_id in temporary removed rows
+    tmp_removed_rows = row[~((row['product_name'] == max[0]) & (row['product_description'] == max[1]) & (row['product_category'] == max[2]) & (row['unit_price'] == max[3]))]
+    # add the reason of the removal and append the temporary removed rows to removed rows
+    for _, removed_row in tmp_removed_rows.iterrows():
+        removed_row_with_reason = removed_row.to_dict()
+        removed_row_with_reason['reason'] = f'The row has been removed for product_id: {product_id} with a less frequent combination'
+        removed_rows.append(removed_row_with_reason)
 
 sales_data = pd.concat(rows_toKeep, ignore_index=True)
 
+#save the removed rows in a txt file
+with open('removed_rows.txt', 'w') as f:
+    for row in removed_rows:
+        f.write(str(row) + '\n')
+
+# pd.DataFrame(removed_rows).to_csv('removed_rows.csv', index=False)
+
 # 2.3 CREATE DERIVED FIELDS
 sales_data['total_price'] = sales_data['quantity'] * sales_data['unit_price'] * (1 - sales_data['discount'])  # Declare new calculated fields
+sales_data['transaction_price'] = 0
 sales_data['total_sold'] = 0
 sales_data['stock_level'] = 0
 
@@ -67,6 +125,17 @@ sales_summary = sales_data.groupby(['store_id','product_id']).agg({'total_price'
 
 #print(sales_summary)
 # 2.4 PARTITION DATA IN DIFFERENT DATA FRAME
+
+# CITIES
+cities = sales_data[['store_postalcode', 'store_city']]
+unique_cities = set()
+cities_to_keep = []
+for index, row in cities.iterrows():
+    if row['store_postalcode'] not in unique_cities:
+        cities_to_keep.append(row)
+        unique_cities.add(row['store_postalcode'])
+
+cities = pd.DataFrame(cities_to_keep)
 
 # STORES
 stores = sales_data[['store_id', 'store_address', 'store_postalcode']]
@@ -106,7 +175,7 @@ for index, row in products.iterrows():
 products = pd.DataFrame(products_toKeep)
 
 # TRANSACTIONS
-transactions = sales_data[['transaction_id', 'payment_method', 'store_id', 'date_time', 'transaction_type']]
+transactions = sales_data[['transaction_id', 'payment_method', 'store_id', 'date_time', 'transaction_type', 'transaction_price']]
 unique_transactions = set()
 transactions_toKeep = []
 for index, row in transactions.iterrows():
@@ -136,9 +205,13 @@ for index, row in transaction_products.iterrows():
         # UPDATE NUMBER OF PRODUCT SOLD
         product_row = products[products['product_id'] == row['product_id']]
         transaction_row = transactions[transactions['transaction_id'] == row['transaction_id']] #transaction row with the right id
-        if transaction_row['transaction_type'].values[0] == 'Sell':
+        if transaction_row['transaction_type'].values[0] == 'sell':
             quantity = product_row['total_sold'].values[0] + row['quantity']
             products.loc[products['product_id'] == row['product_id'], 'total_sold'] = quantity
+        # UPDATE THE TRANSACTION PRICE
+        transaction_row = transactions[transactions['transaction_id'] == row['transaction_id']]
+        transaction_price = transaction_row['transaction_price'].values[0] + row['total_price']
+        transactions.loc[transactions['transaction_id'] == row['transaction_id'], 'transaction_price'] = transaction_price    
         # UPDATE NUMBER OF PRODUCT IN THE STOCK
         store_id = transaction_row['store_id'].values[0] #store id of the transaction
         stock_row = stocks[(stocks['store_id'] == store_id) & (stocks['product_id'] == row['product_id'])] #stock row with the right id
@@ -147,9 +220,9 @@ for index, row in transaction_products.iterrows():
         #print(f"the stock level is {stock_row['stock_level'].values[0]}")
         if stock_row.empty:
             stock_level = row['quantity']
-        elif(transaction_row['transaction_type'].values[0] == 'Buy'):
+        elif(transaction_row['transaction_type'].values[0] == 'buy'):
             stock_level = stock_row['stock_level'].values[0] + row['quantity']
-        elif(transaction_row['transaction_type'].values[0] == 'Sell'):
+        elif(transaction_row['transaction_type'].values[0] == 'sell'):
             stock_level = stock_row['stock_level'].values[0] - row['quantity']
         else:
             stock_level = stock_row['stock_level'].values[0]
@@ -176,38 +249,43 @@ on conflict(store_postalcode) do nothing;
 """
 execute_values(cursor, sql1, cities_tuples)
 
+
 stores_tuples = [tuple(x) for x in stores.to_numpy()]
-sql = """
+sql2 = """
+
 INSERT INTO stores (store_id, store_address, store_postalcode)
 VALUES %s
 ON CONFLICT(store_id) DO NOTHING;
 """
-execute_values(cursor, sql, stores_tuples)
+execute_values(cursor, sql2, stores_tuples)
 
 # 3.2 Insert Transactions in the Database
 transactions_tuples = [tuple(x) for x in transactions.to_numpy()]
-sql2 = """
-INSERT INTO transactions (transaction_id, payment_method, store_id, date_time, transaction_type)
+sql3 = """
+INSERT INTO transactions (transaction_id, payment_method, store_id, date_time, transaction_type, transaction_price)
 VALUES %s
 ON CONFLICT(transaction_id) DO NOTHING;
 """
-execute_values(cursor, sql2, transactions_tuples)
+execute_values(cursor, sql3, transactions_tuples)
 
 # 3.3 Insert Products in the Database
 products_tuples = [tuple(x) for x in products.to_numpy()]
-sql3 = """
+sql4 = """
 INSERT INTO products (product_id, product_name, product_description, product_category, unit_price, total_sold)
 VALUES %s
-ON CONFLICT(product_id) DO NOTHING;
+ON CONFLICT(product_id) 
+DO UPDATE SET
+    unit_price = EXCLUDED.unit_price,
+    total_sold = products.total_sold + EXCLUDED.total_sold;
 """
-execute_values(cursor, sql3, products_tuples)
+execute_values(cursor, sql4, products_tuples)
 
 # 3.4 Insert Transaction Products in the Database
 transaction_products_tuples = [tuple(x) for x in transaction_products.to_numpy()]
 sql5 = """
 INSERT INTO transaction_products (transaction_id, product_id, quantity_sold, discount, total_price)
 VALUES %s
-ON CONFLICT(transaction_id, product_id) DO NOTHING;
+ON CONFLICT(product_id, transaction_id) DO NOTHING;
 """
 execute_values(cursor, sql5, transaction_products_tuples)
 
@@ -218,17 +296,31 @@ VALUES %s
 ON CONFLICT(store_id, product_id) DO NOTHING;
 """
 
-#sales_summary_tupels = [tuple(x) for x in sales_summary.to_numpy()]
-#sql7 = '''
-#insert into sales_summary (store_id, product_id, total_price)
-#values %s
-#on conflict (store_id, product_id) do nothing;
-#'''
+# 3.5 Stocks in the Database
+stocks_tuples = [tuple(int(x) for x in row) for row in stocks.to_numpy()]
+sql6 = """
+INSERT INTO stocks (store_id, product_id, stock_level)
+VALUES %s ON CONFLICT(store_id, product_id) 
+DO UPDATE SET
+    stock_level = stocks.stock_level + EXCLUDED.stock_level;
+"""
+execute_values(cursor, sql6, stocks_tuples)
 
-#sales_data_tupels = [tuple(x) for x in sales_data.to_numpy()]
-#sql8 = '''
-#insert into sales_data (transaction_id, date_time, payment_method, product_id, product_name, product_description, 
-#product_category, unit_price, quantity, discount, store_id, store_city, 
-#store_address, store_postalcode, transaction_type, total_price, total_sold, stock_level)
-#values %s
-#'''
+
+# #sql1 = '''select * from sales_data'''
+# #cursor.execute(sql1)
+# sql2 = '''select * from sales_summary'''
+# cursor.execute(sql2)
+# sql3 = '''select * from stores'''
+# cursor.execute(sql3)
+# sql4 = '''select * from products'''
+# cursor.execute(sql4)
+# sql5 = '''select * from transactions'''
+# cursor.execute(sql5)
+# sql6 = '''select * from stocks'''
+# cursor.execute(sql6)
+
+# for i in cursor.fetchall():
+#     print(i)
+
+
