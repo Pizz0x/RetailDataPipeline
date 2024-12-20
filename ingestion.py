@@ -1,7 +1,7 @@
-
 import pandas as pd
 #from sqlalchemy import create_engine
 from datetime import datetime
+
 import psycopg2
 from psycopg2.extras import execute_values
 from config import load_config
@@ -122,6 +122,7 @@ sales_data['total_sold'] = 0
 sales_data['stock_level'] = 0
 
 sales_summary = sales_data.groupby(['store_id','product_id']).agg({'total_price': 'sum'})  # to watch best products, best store and best products per store
+
 #print(sales_summary)
 # 2.4 PARTITION DATA IN DIFFERENT DATA FRAME
 
@@ -146,6 +147,17 @@ for index, row in stores.iterrows():
         unique_stores.add(row['store_id'])
 
 stores = pd.DataFrame(stores_toKeep)
+
+# cities
+cities = sales_data[['store_postalcode', 'store_city']]
+unique_cities = set()
+cities_to_keep = []
+for index, row in cities.iterrows():
+    if row['store_postalcode'] not in unique_cities:
+        cities_to_keep.append(row)
+        unique_cities.add(row['store_postalcode'])
+
+cities = pd.DataFrame(cities_to_keep)
 
 # PRODUCTS
 products = sales_data[['product_id', 'product_name', 'product_description', 'product_category', 'unit_price', 'total_sold']]
@@ -216,6 +228,11 @@ for index, row in transaction_products.iterrows():
             stock_level = stock_row['stock_level'].values[0]
         stocks.loc[(stocks['product_id']==row['product_id']) & (stocks['store_id']==store_id), 'stock_level'] = stock_level
 
+stocks = pd.DataFrame(stocks)
+sales_data = pd.DataFrame(sales_data)
+sales_summary = pd.DataFrame(sales_summary)
+
+
 ### 3. DATA STORAGE 
 
 config = load_config()
@@ -235,6 +252,7 @@ execute_values(cursor, sql1, cities_tuples)
 
 stores_tuples = [tuple(x) for x in stores.to_numpy()]
 sql2 = """
+
 INSERT INTO stores (store_id, store_address, store_postalcode)
 VALUES %s
 ON CONFLICT(store_id) DO NOTHING;
@@ -262,8 +280,7 @@ DO UPDATE SET
 """
 execute_values(cursor, sql4, products_tuples)
 
-
-# 3.4 Insert Transaction Product in the Database
+# 3.4 Insert Transaction Products in the Database
 transaction_products_tuples = [tuple(x) for x in transaction_products.to_numpy()]
 sql5 = """
 INSERT INTO transaction_products (transaction_id, product_id, quantity_sold, discount, total_price)
@@ -272,6 +289,12 @@ ON CONFLICT(product_id, transaction_id) DO NOTHING;
 """
 execute_values(cursor, sql5, transaction_products_tuples)
 
+stocks_tupels = [tuple(x) for x in stocks.to_numpy()]
+sql6 = """
+INSERT INTO stocks (store_id, product_id, stock_level)
+VALUES %s
+ON CONFLICT(store_id, product_id) DO NOTHING;
+"""
 
 # 3.5 Stocks in the Database
 stocks_tuples = [tuple(int(x) for x in row) for row in stocks.to_numpy()]
@@ -299,4 +322,5 @@ execute_values(cursor, sql6, stocks_tuples)
 
 # for i in cursor.fetchall():
 #     print(i)
+
 
