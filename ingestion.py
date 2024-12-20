@@ -7,12 +7,12 @@ from config import load_config
 
 ### 1. DATA INGESTION
 
-sales_data = pd.read_csv('data/transaction_data.csv') # Load data from a CSV file
-
+sales_data = pd.read_csv('data/sample_sales_data.csv') # Load data from a CSV file
+print(sales_data)
 # Store the Extracted Data Temporarily (Optional)
 
 ### 2. DATA TRANSFORMATION
-
+removed_rows = []
 # 2.1 CLEAN DUPLICATE ROWS
 
 unique_sales = set()
@@ -21,12 +21,18 @@ for index, row in sales_data.iterrows():
     if (row['transaction_id'], row['product_id']) not in unique_sales:
         sales_toKeep.append(row)
         unique_sales.add((row['transaction_id'], row['product_id']))
+    else:
+        removed_row_with_reason = row.to_dict()
+        removed_row_with_reason['reason'] = 'The row is a duplicate, it has the same transaction_id and product_id of an already saved row'
+        removed_rows.append(removed_row_with_reason)
     #if date_time < now   ; if discount < 1;  quantity < 1
 sales_data = pd.DataFrame(sales_toKeep)
 
+print(sales_data)
 # 2.2 CLEAN ROWS WITH SAME ID BUT DIFFERENT FIELDS FOR EVERY TYPE OF DATA FRAME
 
 # get all the rows where store_id is the same and see if there are rows with some of the stores field different, do this even for products and transactions
+tmp_removed_rows = []
 store = sales_data.groupby('store_id')
 rows_toKeep = []
 for store_id, row in store:
@@ -35,8 +41,15 @@ for store_id, row in store:
     max = counter.idxmax()
     max_row = row[(row['store_city'] == max[0]) & (row['store_address'] == max[1]) & (row['store_postalcode'] == max[2])]
     rows_toKeep.append(max_row)
-
+    # add the rows that are excluded for a precise store_id in temporary removed rows
+    tmp_removed_rows = row[~((row['store_city'] == max[0]) & (row['store_address'] == max[1]) & (row['store_postalcode'] == max[2]))]
+    # add the reason of the removal and append the temporary removed rows to removed rows
+    for _, removed_row in tmp_removed_rows.iterrows():
+        removed_row_with_reason = removed_row.to_dict()
+        removed_row_with_reason['reason'] = f'The row has been removed for store_id: {store_id} with a less frequent combination'
+        removed_rows.append(removed_row_with_reason)
 sales_data = pd.concat(rows_toKeep, ignore_index=True)
+print(sales_data)
 
 transaction = sales_data.groupby('transaction_id')
 rows_toKeep = []
@@ -46,6 +59,13 @@ for transaction_id, row in transaction:
     max = counter.idxmax()
     max_row = row[(row['payment_method'] == max[0]) & (row['store_id'] == max[1]) & (row['date_time'] == max[2]) & (row['transaction_type'] == max[3])]
     rows_toKeep.append(max_row)
+    # add the rows that are excluded for a precise store_id in temporary removed rows
+    tmp_removed_rows = row[~((row['payment_method'] == max[0]) & (row['store_id'] == max[1]) & (row['date_time'] == max[2]) & (row['transaction_type'] == max[3]))]
+    # add the reason of the removal and append the temporary removed rows to removed rows
+    for _, removed_row in tmp_removed_rows.iterrows():
+        removed_row_with_reason = removed_row.to_dict()
+        removed_row_with_reason['reason'] = f'The row has been removed for transaction_id: {transaction_id} with a less frequent combination'
+        removed_rows.append(removed_row_with_reason)
 
 sales_data = pd.concat(rows_toKeep, ignore_index=True)
 
@@ -57,8 +77,22 @@ for product_id, row in product:
     max = counter.idxmax()
     max_row = row[(row['product_name'] == max[0]) & (row['product_description'] == max[1]) & (row['product_category'] == max[2]) & (row['unit_price'] == max[3])]
     rows_toKeep.append(max_row)
+    # add the rows that are excluded for a precise store_id in temporary removed rows
+    tmp_removed_rows = row[~((row['product_name'] == max[0]) & (row['product_description'] == max[1]) & (row['product_category'] == max[2]) & (row['unit_price'] == max[3]))]
+    # add the reason of the removal and append the temporary removed rows to removed rows
+    for _, removed_row in tmp_removed_rows.iterrows():
+        removed_row_with_reason = removed_row.to_dict()
+        removed_row_with_reason['reason'] = f'The row has been removed for product_id: {product_id} with a less frequent combination'
+        removed_rows.append(removed_row_with_reason)
 
 sales_data = pd.concat(rows_toKeep, ignore_index=True)
+
+#save the removed rows in a txt file
+with open('removed_rows.txt', 'w') as f:
+    for row in removed_rows:
+        f.write(str(row) + '\n')
+
+# pd.DataFrame(removed_rows).to_csv('removed_rows.csv', index=False)
 
 # 2.3 CREATE DERIVED FIELDS
 sales_data['total_price'] = sales_data['quantity'] * sales_data['unit_price'] * (1 - sales_data['discount'])  # Declare new calculated fields
