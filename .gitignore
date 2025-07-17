@@ -4,3 +4,4 @@ database.ini
 removed_rows.txt
 requirements.txt
 __pycache__
+.gitignore
