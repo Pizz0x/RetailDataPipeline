@@ -1,2 +1,6 @@
 # ignore database_uri
 database_uri.py
+database.ini
+removed_rows.txt
+requirements.txt
+__pycache__
