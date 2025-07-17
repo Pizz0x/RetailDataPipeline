@@ -22,8 +22,7 @@ default_args = {
 
 ### 1. DATA INGESTION
 def ingestion(**kwargs):  #kwargs pass a variable number of keyword arguments to a function
-    sales_data = pd.read_csv('data/transaction_data.csv') # Load data from a CSV file
-    print(sales_data)
+    sales_data = pd.read_csv('data/retail_store_transactions.csv') # Load data from a CSV file
     kwargs['ti'].xcom_push(key='csv_data', value=sales_data.to_dict(orient='records'))
 
 
@@ -32,6 +31,7 @@ def transformation(**kwargs):
     # for the log file with the rows that we don't save and the reason why we don't save them
     removed_rows = []
     sales_data = pd.DataFrame(kwargs['ti'].xcom_pull(key='csv_data'))
+    
     # 2.1 CLEAN ERRORS & DUPLICATE ROWS
     sales_toKeep = []
     # first we clean rows with data that can't be correct
@@ -50,11 +50,15 @@ def transformation(**kwargs):
             removed_row_with_reason = row.to_dict()
             removed_row_with_reason['reason'] = f'This transaction has a register date: {date_time} greater than the actual time {now}'
             removed_rows.append(removed_row_with_reason)
+        elif (row['transaction_type'] != 'buy' or row['transaction_type'] != 'sell'):
+            removed_row_with_reason = row.to_dict()
+            removed_row_with_reason['reason'] = 'This transaction has an incorrect transaction type'
+            removed_rows.append(removed_row_with_reason)    
         else:
             sales_toKeep.append(row)
 
     sales_data = pd.DataFrame(sales_toKeep)
-
+    # then we clean duplicated rows
     unique_sales = set()
     sales_toKeep = []
     for index, row in sales_data.iterrows():
@@ -279,7 +283,6 @@ def storing(**kwargs):
         VALUES %s
         ON CONFLICT(product_id) 
         DO UPDATE SET
-            unit_price = EXCLUDED.unit_price,
             total_sold = products.total_sold + EXCLUDED.total_sold;
     """
     execute_values(cursor, sql4, products_tuples)
@@ -307,7 +310,7 @@ with DAG(  #instance of DAG, all the code wll be under the scope of the dag inst
     dag_id = 'Retail_Company_ETL_Pipeline',
     default_args = default_args,
     description='ETL Pipeline DAG on a Retail Company data',
-    start_date=datetime(2024, 1, 12, 1),  # 1/12/2024
+    start_date=datetime(2025, 1, 1, 0, 0),  # 1/1/2025 at midnight
     schedule_interval='@daily'             # every day
 ) as dag:
     data_ingestion = PythonOperator(
